@@ -1,14 +1,15 @@
+import asyncio
 from langgraph.graph import StateGraph, START, END
+from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 from agent.state import AgentState
 from agent.scraper import scraper_node
 from agent.reader import reader_node
-from agent.validator import validator_node
-from agent.validator import routing_function
+from agent.validator import validator_node, routing_function
 from agent.orchestrator import orchestrator_node
-import asyncio
+from agent.persistence.checkpointer import get_db_path
+from agent.persistence.run_logger import log_run
 
-
-def build_graph():
+def build_graph(checkpointer):
     graph = StateGraph(AgentState)
 
     graph.add_node("orchestrator", orchestrator_node)
@@ -30,27 +31,36 @@ def build_graph():
         }
     )
 
-    return graph.compile()
+    return graph.compile(checkpointer=checkpointer)
 
 
-# quick local test
-if __name__ == "__main__":
-
-    app = build_graph()
-
+async def main():
     initial_state = {
-        "urls": ["https://hnrss.org/frontpage"],
+        "urls": [ "https://techcrunch.com/feed/"],
         "raw_articles": [],
         "summaries": [],
         "validated": [],
         "run_meta": {},
     }
 
-    result = asyncio.run(app.ainvoke(initial_state))
+    async with AsyncSqliteSaver.from_conn_string(get_db_path()) as checkpointer:
+        app = build_graph(checkpointer)
+        result = await app.ainvoke(
+            initial_state,
+            config={"configurable": {"thread_id": "run-001"}}
+        )
+
+    log_run(
+    run_meta=result["run_meta"],
+    raw_articles=result["raw_articles"],
+    validated=result["validated"],
+)
 
     print("\n--- VALIDATED ---")
     for s in result["validated"]:
         print(f"Headline:  {s['headline']}")
+        print(f"Summary:   {s['summary']}")
+        print(f"Category:  {s['category']}")
         print(f"Score:     {s['relevance_score']}")
         print()
 
@@ -58,3 +68,7 @@ if __name__ == "__main__":
     print(f"Started at:  {result['run_meta'].get('started_at')}")
     print(f"Status:      {result['run_meta'].get('status')}")
     print(f"Retries:     {result['run_meta'].get('retry_count')}")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
