@@ -4,6 +4,7 @@ from datetime import datetime
 from email.message import EmailMessage
 from dotenv import load_dotenv
 from agent.state import AgentState
+from agent.persistence.subscriber_store import init_subscribers, get_active_subscribers
 
 load_dotenv()
 
@@ -37,14 +38,13 @@ def render_plaintext(validated: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def send_email(digest: str, validated: list[dict]) -> bool:
+def send_email(digest: str, validated: list[dict], recipient: str) -> bool:
     """Send the digest via SMTP. Returns True on success, False if skipped/failed."""
     host = os.getenv("SMTP_HOST")
     port = int(os.getenv("SMTP_PORT", "587"))
     user = os.getenv("SMTP_USER")
     password = os.getenv("SMTP_PASS")
     sender = os.getenv("EMAIL_FROM", user)
-    recipient = os.getenv("EMAIL_TO")
 
     if not all([host, user, password, recipient]):
         print("  \u26a0 Delivery: SMTP not configured — skipping email.")
@@ -93,11 +93,30 @@ async def delivery_node(state: AgentState) -> dict:
     delivered_to.append(filepath)
     print(f"\u2713 Delivery: digest archived \u2192 {filepath}")
 
-    # Output 2 — email, but not when there were no stories
     if not validated:
         print("  \u26a0 Delivery: no validated stories — skipping email.")
-    elif send_email(digest, validated):
-        delivered_to.append(f"email:{os.getenv('EMAIL_TO')}")
+        run_meta["delivered_to"] = delivered_to
+        return {"run_meta": run_meta}
+    
+    admin_email = os.getenv("EMAIL_FROM") or os.getenv("SMTP_USER")
+    if admin_email:
+        print(f"  \u2192 Admin copy \u2192 {admin_email}")
+        if send_email(digest, validated, admin_email):
+            delivered_to.append(f"email:{admin_email}")
+    
+    init_subscribers()
+    subscribers = get_active_subscribers()
+    print(f"  \u2192 Broadcasting to {len(subscribers)} subscriber(s)")
+
+    for sub in subscribers:
+        recipient = sub["email"]
+        if recipient == admin_email:
+            continue                    # already received the admin copy
+        print(f"    \u2022 {recipient}")
+        if send_email(digest, validated, recipient):
+            delivered_to.append(f"email:{recipient}")
+
+
 
     run_meta["delivered_to"] = delivered_to
     return {"run_meta": run_meta}
