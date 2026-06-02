@@ -11,3 +11,6 @@ wheels/
 .env
 documents/ 
 images/
+
+sample_digest.html
+test_smtp.py

@@ -5,5 +5,6 @@ class AgentState(TypedDict):
     raw_articles: list[dict]  # output: scraped article content
     summaries: list[dict] 
     validated: list[dict]
+    digest: str
     run_meta: dict
     

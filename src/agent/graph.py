@@ -8,7 +8,8 @@ from agent.validator import validator_node, routing_function
 from agent.orchestrator import orchestrator_node
 from agent.persistence.checkpointer import get_db_path
 from agent.persistence.run_logger import log_run
-
+from agent.formater import formatter_node
+from agent.delivery import delivery_node
 def build_graph(checkpointer):
     graph = StateGraph(AgentState)
 
@@ -16,6 +17,8 @@ def build_graph(checkpointer):
     graph.add_node("scraper", scraper_node)
     graph.add_node("reader", reader_node)
     graph.add_node("validator", validator_node)
+    graph.add_node("formatter", formatter_node)
+    graph.add_node("delivery", delivery_node)
 
     graph.add_edge(START, "orchestrator")
     graph.add_edge("orchestrator", "scraper")
@@ -26,20 +29,23 @@ def build_graph(checkpointer):
         "validator",
         routing_function,
         {
-            "continue": END,
+            "continue": "formatter",
             "retry": "reader"
         }
     )
+    graph.add_edge("formatter", "delivery")
+    graph.add_edge("delivery", END)
 
     return graph.compile(checkpointer=checkpointer)
 
 
 async def main():
     initial_state = {
-        "urls": [ "https://techcrunch.com/feed/"],
+        "urls": [ "https://hnrss.org/frontpage"],
         "raw_articles": [],
         "summaries": [],
         "validated": [],
+        "digest": "",
         "run_meta": {},
     }
 
@@ -55,6 +61,12 @@ async def main():
     raw_articles=result["raw_articles"],
     validated=result["validated"],
 )
+    
+    digest = result.get("digest", "")
+    if digest:
+        with open("last_digest.html", "w") as f:
+            f.write(digest)
+        print(f"\n\U0001f4c4 Digest written to last_digest.html ({len(digest)} chars)")
 
     print("\n--- VALIDATED ---")
     for s in result["validated"]:
@@ -68,7 +80,7 @@ async def main():
     print(f"Started at:  {result['run_meta'].get('started_at')}")
     print(f"Status:      {result['run_meta'].get('status')}")
     print(f"Retries:     {result['run_meta'].get('retry_count')}")
-
+    print(f"Delivered to:  {result['run_meta'].get('delivered_to')}")
 
 if __name__ == "__main__":
     asyncio.run(main())
