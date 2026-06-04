@@ -99,10 +99,10 @@ async def delivery_node(state: AgentState) -> dict:
         return {"run_meta": run_meta}
     
     admin_email = os.getenv("EMAIL_FROM") or os.getenv("SMTP_USER")
-    if admin_email:
-        print(f"  \u2192 Admin copy \u2192 {admin_email}")
-        if send_email(digest, validated, admin_email):
-            delivered_to.append(f"email:{admin_email}")
+    # if admin_email:
+    #     print(f"  \u2192 Admin copy \u2192 {admin_email}")
+    #     if send_email(digest, validated, admin_email):
+    #         delivered_to.append(f"email:{admin_email}")
     
     init_subscribers()
     subscribers = get_active_subscribers()
