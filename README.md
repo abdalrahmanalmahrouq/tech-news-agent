@@ -242,7 +242,7 @@ tech-news-agent/
 ### 1. Clone and configure
 
 ```bash
-git clone https://github.com/<your-username>/tech-news-agent.git
+git clone https://github.com/abdalrahmanalmahrouq/tech-news-agent
 cd tech-news-agent
 cp .env.example .env
 ```
@@ -386,14 +386,14 @@ Use `[skip ci]` in a commit message to push without triggering a deployment.
 
 ---
 
-## What's next
+<!-- ## What's next
 
 - APScheduler trigger strategy: domain-based scheduling (weekdays only, skip if 0 new articles)
 - Multi-source expansion: add TechCrunch, Ars Technica, HuggingFace blog feeds alongside HN
 - Retry logic refinement: retry only on quality failures (short summary, missing fields), not on editorial score
 - PostgreSQL migration: replace SQLite when concurrency or horizontal scaling becomes a requirement
 - Domain + HTTPS: Route 53 A record + Nginx reverse proxy + Let's Encrypt certificate
-- Unsubscribe link: one-click unsubscribe token in email footer
+- Unsubscribe link: one-click unsubscribe token in email footer -->
 
 ---
 
