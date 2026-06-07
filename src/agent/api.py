@@ -1,6 +1,7 @@
 import uuid
 from loguru import logger
 from contextlib import asynccontextmanager
+from fastapi.staticfiles import StaticFiles 
 from fastapi import FastAPI, BackgroundTasks, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -50,17 +51,17 @@ async def scheduled_run():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     scheduler = AsyncIOScheduler()
-    # scheduler.add_job(
-    #     scheduled_run,
-    #     CronTrigger(hour=7, minute=0, timezone="UTC"),
-    #     id="daily_digest",
-    #     name="Daily digest - 07:00 UTC "
-    # )
     scheduler.add_job(
-    scheduled_run,
-    DateTrigger(run_date=datetime.utcnow() + timedelta(minutes=2)),
-    id="daily_digest",
-)
+        scheduled_run,
+        CronTrigger(hour=7, minute=0, timezone="UTC"),
+        id="daily_digest",
+        name="Daily digest - 07:00 UTC "
+    )
+#     scheduler.add_job(
+#     scheduled_run,
+#     DateTrigger(run_date=datetime.utcnow() + timedelta(minutes=2)),
+#     id="daily_digest",
+# ) # just for testing the apscheduler this will tregger the api after two minutes of the first run .
     scheduler.start()
     logger.info("Scheduler started - daily run at 07:00 UTC")
     yield
@@ -79,8 +80,8 @@ app.add_middleware(
 logger.add("../data/logs/agent.log", rotation="1 day", retention="7 days", level="INFO")
 
 
-@app.get("/")
-async def root():
+@app.get("/health")                          # ← renamed from / to /health
+async def health():
     return {"ok": True, "service": "AI News Agent"}
 
 
@@ -112,3 +113,6 @@ async def subscribe(request: SubscriberRequest):
     except Exception as e :
         logger.error("Subcriber failed for {} - {}", request.email, e)
         raise HTTPException(status_code=500, detail="Failed to save subscriber")
+    
+
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
