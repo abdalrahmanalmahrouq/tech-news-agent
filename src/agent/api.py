@@ -53,9 +53,9 @@ async def lifespan(app: FastAPI):
     scheduler = AsyncIOScheduler()
     scheduler.add_job(
         scheduled_run,
-        CronTrigger(hour=7, minute=0, timezone="UTC"),
+        CronTrigger(hour=0, minute=26, timezone="Asia/Amman"),
         id="daily_digest",
-        name="Daily digest - 07:00 UTC "
+        name="Daily digest - 09:00 Amman "
     )
 #     scheduler.add_job(
 #     scheduled_run,

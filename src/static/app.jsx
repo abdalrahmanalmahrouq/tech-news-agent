@@ -9,7 +9,7 @@ const Ico = {
   spark: (p) => (<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M8.5 15.5L6 18"/></svg>),
   inbox: (p) => (<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M3 12l3-7h12l3 7v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 12h5l1.5 2.5h5L16 12h5"/></svg>),
   globe: (p) => (<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.7" {...p}><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18"/></svg>),
-  link: (p) => (<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1.5-1.5"/></svg>),
+  link: (p) => (<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M9 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1.5-1.5"/></svg>),
 };
 
 const SOURCES = ["TechCrunch", "The Verge", "Ars Technica", "Hacker News", "WIRED", "MIT Tech Review", "The Information", "Bloomberg Tech", "Stratechery"];
@@ -72,7 +72,7 @@ function Signup({ id, compact }) {
       <div className="success" role="status">
         <div className="check">{Ico.check()}</div>
         <h3>You're on the list, {name.trim().split(" ")[0]}.</h3>
-        <p>Your first brief lands <b style={{color:"var(--text)"}}>tomorrow at 7:00 AM</b>. Check {email.trim()} to confirm — it takes one tap.</p>
+        <p>Your first brief lands <b style={{color:"var(--text)"}}>tomorrow at 9:00 AM</b>. Check {email.trim()} to confirm — it takes one tap.</p>
         <span className="badge">◆ subscriber #{num.toLocaleString()}</span>
       </div>
     );
@@ -123,13 +123,13 @@ function Preview() {
       <div className="preview-body">
         <div className="mail-meta">
           <div className="mail-from">
-            <div className="ic"><img src={(window.__resources&&window.__resources.mark)||"mark.svg"} alt="" style={{width:"100%",height:"100%"}} /></div>
+            <div className="ic"><img src={(window.__resources&&window.__resources.mark)||"mark.svg"} alt="" style={{width:"90%",height:"90%"}} /></div>
             <div>
               <div className="n">Technology News Agent</div>
               <div className="e">agent@technews.ai</div>
             </div>
           </div>
-          <div className="mail-date">FRI · JUN 5<br/>7:00 AM</div>
+          <div className="mail-date">FRI · JUN 5<br/>9:00 AM</div>
         </div>
         <div className="mail-subject"><span className="globe">{Ico.globe()}</span>Executive Technology News Briefing</div>
         <div className="rule"></div>
@@ -210,7 +210,7 @@ function App() {
       <header className="hero" id="subscribe">
         <div className="wrap hero-grid">
           <div>
-            <span className="eyebrow"><span className="live"></span>AI news agent · every weekday · 7:00 AM</span>
+            <span className="eyebrow"><span className="live"></span>AI news agent · every weekday · 9:00 AM</span>
             <h1 className="headline">Stop scrolling tech news. <span className="hl">Let an agent read it</span> for you.</h1>
             <p className="subhead">Your AI agent reads 50+ sources overnight and sends one sharp, 5-minute brief of what actually matters — built for engineers who don't have time for noise.</p>
             <Signup id="hero" />
@@ -239,7 +239,7 @@ function App() {
             {[
               { n:"step 01", ic: Ico.scan, h:"It scans the web", p:"Every night the agent crawls 50+ trusted tech sources — news sites, engineering blogs, research drops and release notes." },
               { n:"step 02", ic: Ico.spark, h:"It summarizes the signal", p:"It ranks stories by what matters to builders, strips the fluff, and writes plain-English summaries you can scan in seconds." },
-              { n:"step 03", ic: Ico.inbox, h:"It lands in your inbox", p:"One clean email at 7:00 AM, every weekday. A 5-minute read that keeps you ahead — no app, no feed, no doom-scroll." },
+              { n:"step 03", ic: Ico.inbox, h:"It lands in your inbox", p:"One clean email at 9:00 AM, every weekday. A 5-minute read that keeps you ahead — no app, no feed, no doom-scroll." },
             ].map((s,i)=>(
               <div className="step reveal" key={i} style={{transitionDelay:(i*0.08)+"s"}}>
                 <div className="step-num">{s.n}</div>
