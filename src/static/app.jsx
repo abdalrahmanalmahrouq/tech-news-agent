@@ -297,7 +297,7 @@ function App() {
             <a href="#subscribe">Subscribe</a>
             <a href="#">Privacy</a>
           </div>
-          <div className="copy">© 2026 By <a href="https://www.linkedin.com/in/abdalrahman-al-mahrouq-38a54b267/" style={{color:"inherit"}}> Abdalrahman Almahrouq </a> </div>
+          <div className="copy">© 2026 By <a href="https://www.linkedin.com/in/abdalrahman-al-mahrouq-38a54b267/" style={{color:"inherit"}} target="_blank"> Abdalrahman Almahrouq </a> </div>
         </div>
       </footer>
 
