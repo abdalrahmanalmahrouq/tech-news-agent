@@ -86,7 +86,7 @@ async def fetch_description_source(client: httpx.AsyncClient, source_url: str) -
             "source": url,
         })
 
-    return articles[:MAX_ARTICLES_PER_SOURCE]
+    return articles
 
 async def scraper_node(state: AgentState) -> dict:
     FALLBACK_ONLY = os.getenv("SCRAPER_MODE", "fallback") == "fallback"
@@ -102,7 +102,7 @@ async def scraper_node(state: AgentState) -> dict:
             try:
                 response = await client.get(source_url)
                 article_urls = extract_article_urls(response.text, source_url)
-                article_urls = article_urls[:MAX_ARTICLES_PER_SOURCE]
+                # article_urls = article_urls[:MAX_ARTICLES_PER_SOURCE]
                 logger.info("  Found {} articles in feed", len(article_urls))
 
                 to_fetch = []
