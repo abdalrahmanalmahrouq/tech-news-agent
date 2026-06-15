@@ -43,7 +43,7 @@ def build_graph(checkpointer):
     return graph.compile(checkpointer=checkpointer)
 
 
-async def run_pipeline(urls: list[str], run_id: str | None = None) -> dict:
+async def run_pipeline(run_id: str | None = None) -> dict:
     """Run the full pipeline once and return the final state.
     This is the reusable core — the CLI, FastAPI, and the scheduler all call it."""
     run_id = run_id or str(uuid.uuid4())[:8]
@@ -51,7 +51,7 @@ async def run_pipeline(urls: list[str], run_id: str | None = None) -> dict:
     logger.info("Pipeline starting | run_id={}", run_id)
 
     initial_state = {
-        "urls": urls,
+        "urls": [],
         "raw_articles": [],
         "summaries": [],
         "validated": [],
@@ -77,7 +77,7 @@ async def run_pipeline(urls: list[str], run_id: str | None = None) -> dict:
 async def main():
     logger.add("../data/logs/agent.log", rotation="1 day", retention="7 days", level="INFO")
     """CLI entry point — runs the pipeline then prints results."""
-    final_state = await run_pipeline(["https://hnrss.org/frontpage"])
+    final_state = await run_pipeline()
 
     digest = final_state.get("digest", "")
     if digest:
