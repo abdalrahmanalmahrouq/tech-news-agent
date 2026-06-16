@@ -29,7 +29,7 @@ async def run_and_track(run_id: str, urls: list[str]) -> None:
     RUNS[run_id] = {"status": "running"}
     logger.info("Background task started | run_id={}", run_id)
     try:
-        final_state = await run_pipeline(urls, run_id=run_id)
+        final_state = await run_pipeline(run_id=run_id)
         run_meta = final_state.get("run_meta", {})
         RUNS[run_id] = {
             "status": "completed",
