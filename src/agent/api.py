@@ -51,17 +51,18 @@ async def scheduled_run():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     scheduler = AsyncIOScheduler()
+    # scheduler.add_job(
+    #     scheduled_run,
+    #     CronTrigger(hour=9, minute=0, timezone="Asia/Amman"),
+    #     id="daily_digest",
+    #     name="Daily digest - 09:00 Amman "
+    # )
     scheduler.add_job(
-        scheduled_run,
-        CronTrigger(hour=9, minute=0, timezone="Asia/Amman"),
-        id="daily_digest",
-        name="Daily digest - 09:00 Amman "
-    )
-#     scheduler.add_job(
-#     scheduled_run,
-#     DateTrigger(run_date=datetime.utcnow() + timedelta(minutes=2)),
-#     id="daily_digest",
-# ) # just for testing the apscheduler this will tregger the api after two minutes of the first run .
+    scheduled_run,
+    DateTrigger(run_date=datetime.utcnow() + timedelta(minutes=2)),
+    id="daily_digest",
+) 
+# just for testing the apscheduler this will tregger the api after two minutes of the first run .
     scheduler.start()
     logger.info("Scheduler started - daily run at 07:00 UTC")
     yield

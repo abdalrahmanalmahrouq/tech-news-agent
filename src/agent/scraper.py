@@ -13,7 +13,7 @@ SOURCES = [
     {"url": "https://hnrss.org/frontpage",        "mode": "fetch"},
     # {"url": "https://techcrunch.com/feed/",        "mode": "fetch"},
     # {"url": "https://www.kdnuggets.com/feed",      "mode": "fetch"},
-    {"url": "https://venturebeat.com/feed/",       "mode": "description"},
+    #{"url": "https://venturebeat.com/feed/",       "mode": "description"},
 ]
 
 def extract_article_urls(feed_text: str, source_url: str) -> list[str]:
@@ -102,7 +102,7 @@ async def scraper_node(state: AgentState) -> dict:
             try:
                 response = await client.get(source_url)
                 article_urls = extract_article_urls(response.text, source_url)
-                # article_urls = article_urls[:MAX_ARTICLES_PER_SOURCE]
+                article_urls = article_urls[:MAX_ARTICLES_PER_SOURCE]
                 logger.info("  Found {} articles in feed", len(article_urls))
 
                 to_fetch = []
