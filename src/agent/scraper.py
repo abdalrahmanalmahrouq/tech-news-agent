@@ -11,8 +11,8 @@ MAX_ARTICLES_PER_SOURCE = 2
 
 SOURCES = [
     {"url": "https://hnrss.org/frontpage",        "mode": "fetch"},
-    # {"url": "https://techcrunch.com/feed/",        "mode": "fetch"},
-    # {"url": "https://www.kdnuggets.com/feed",      "mode": "fetch"},
+    {"url": "https://techcrunch.com/feed/",        "mode": "fetch"},
+    {"url": "https://www.kdnuggets.com/feed",      "mode": "fetch"},
     {"url": "https://venturebeat.com/feed/",       "mode": "description"},
 ]
 
