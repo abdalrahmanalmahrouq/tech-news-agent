@@ -54,6 +54,13 @@ def score_relevance(summary: str, category: str) -> float:
         return 0.5
 
 
+def extract_json(text: str) -> str:
+    text = text.strip()
+    if text.startswith("```"):
+        text = text.split("```")[1] if text.count("```") >= 2 else text.lstrip("`")
+        text = text.removeprefix("json").strip()
+    return text
+
 llm = get_llm()
 tools = [summarize_article, score_relevance]
 react_agent = create_react_agent(llm, tools)
@@ -86,7 +93,7 @@ Article Content: {article['body_text'][:2000]}
             last_message = result["messages"][-1].content
 
             try:
-                parsed = json.loads(last_message)
+                parsed = json.loads(extract_json(last_message))
                 summary = {
                     "url": article["url"],
                     "headline": parsed.get("headline", "No headline"),
